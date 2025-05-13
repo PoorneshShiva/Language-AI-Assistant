@@ -1,0 +1,28 @@
+[project]
+name = "lexilearn"
+version = "0.1.0"
+description = "The Language Learner AI Assistant is designed to be an effective and agentic learning tool for language students. Initially focused on German, the project aims to provide a personalized learning experience with the potential to scale to other languages in the future."
+authors = [
+    {name = "Poornesh Shiva",email = "info@poorneshshiva.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi (>=0.115.12,<0.116.0)",
+    "uvicorn (>=0.34.2,<0.35.0)"
+]
+
+
+packages = [{include = "vid2htmlapi", from = "src/"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+lexilearn = "lexilearn.main:main"
+
+
+
