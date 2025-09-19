@@ -1,5 +1,5 @@
 import strawberry
-from typing import Optional, List
+from typing import Optional, List, cast
 import datetime
 from strawberry.scalars import JSON
 
@@ -34,14 +34,14 @@ class PracticeEventInput:
 class AppMutation:
     @strawberry.mutation
     def create_user(self, info: strawberry.Info, email: str, display_name: Optional[str] = None) -> AppUser:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         user_id = db.add_app_user({"email": email, "display_name": display_name})
         user_data = db.get_app_user(user_id)
         return AppUser(**user_data)
 
     @strawberry.mutation
     def update_user_settings(self, info: strawberry.Info, user_id: strawberry.ID, settings: UserSettingsInput) -> UserSettings:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         updated_settings = db.update_user_settings(
             str(user_id),
             level=settings.level.value if settings.level else None,
@@ -53,13 +53,13 @@ class AppMutation:
 
     @strawberry.mutation
     def detect_words(self, info: strawberry.Info, tokens: List[str]) -> List[WordIndex]:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         detected_words = db.detect_words(tokens)
         return [WordIndex(**word) for word in detected_words]
 
     @strawberry.mutation
     def random_word(self, info: strawberry.Info, user_id: strawberry.ID) -> Optional[WordIndex]:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         random_word_data = db.random_word(str(user_id))
         if random_word_data:
             return WordIndex(**random_word_data)
@@ -67,7 +67,7 @@ class AppMutation:
 
     @strawberry.mutation
     def evaluate_practice_event(self, info: strawberry.Info, event_data: PracticeEventInput) -> PracticeEvent:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         event_id = db.evaluate_practice_event({
             "session_id": str(event_data.session_id) if event_data.session_id else None,
             "user_id": str(event_data.user_id),
@@ -86,7 +86,7 @@ class AppMutation:
 
     @strawberry.mutation
     def update_confidence(self, info: strawberry.Info, user_id: strawberry.ID, word_uid: strawberry.ID, confidence: Confidence) -> UserWord:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         # This is a simplified SRS logic. In a real app, interval_days, stability would be calculated.
         # For now, just update status and last_result.
         status = LearnStatus.LEARNING.value
@@ -103,7 +103,7 @@ class AppMutation:
 
     @strawberry.mutation
     def complete_word(self, info: strawberry.Info, user_id: strawberry.ID, word_uid: strawberry.ID) -> UserWord:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         updated_user_word = db.update_user_word_status(
             str(user_id),
             str(word_uid),
@@ -114,7 +114,7 @@ class AppMutation:
 
     @strawberry.mutation
     def review_again(self, info: strawberry.Info, user_id: strawberry.ID, word_uid: strawberry.ID) -> UserWord:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         updated_user_word = db.update_user_word_status(
             str(user_id),
             str(word_uid),
@@ -125,7 +125,7 @@ class AppMutation:
 
     @strawberry.mutation
     def ignore_word(self, info: strawberry.Info, user_id: strawberry.ID, word_uid: strawberry.ID) -> UserWord:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         updated_user_word = db.update_user_word_status(
             str(user_id),
             str(word_uid),
@@ -136,7 +136,7 @@ class AppMutation:
 
     @strawberry.mutation
     def unignore_word(self, info: strawberry.Info, user_id: strawberry.ID, word_uid: strawberry.ID) -> UserWord:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         updated_user_word = db.update_user_word_status(
             str(user_id),
             str(word_uid),

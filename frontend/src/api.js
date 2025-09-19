@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000/v1";
+const BASE_URL = "http://localhost:8000/api/v1";
 
 async function fetchApi(path, options = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {
@@ -64,3 +64,32 @@ export const patchSettings = (settings) => fetchApi("/settings", {
     body: JSON.stringify(settings),
 });
 export const getStats = () => fetchApi("/stats");
+
+export const analyzeSentence = (payload) => fetchApi("/learn/analyze", {
+  method: "POST",
+  body: JSON.stringify(payload),
+});
+
+export const createAssignment = (payload) => fetchApi("/learn/assignments", {
+  method: "POST",
+  body: JSON.stringify(payload),
+});
+
+export const listAssignments = (status) => {
+  const query = status ? `?status=${encodeURIComponent(status)}` : "";
+  return fetchApi(`/learn/assignments${query}`);
+};
+
+export const updateAssignment = (assignmentId, payload) => fetchApi(`/learn/assignments/${assignmentId}`, {
+  method: "PATCH",
+  body: JSON.stringify(payload),
+});
+
+export const createScenario = (payload) => fetchApi("/learn/scenarios", {
+  method: "POST",
+  body: JSON.stringify(payload),
+});
+
+export const listScenarios = (limit = 10) => fetchApi(`/learn/scenarios?limit=${limit}`);
+
+export const listAnalyses = (limit = 10) => fetchApi(`/learn/analyze/history?limit=${limit}`);

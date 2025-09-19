@@ -12,14 +12,19 @@ from lexilearn.database import Database, get_db_connection
 
 class AgenticMain():
 
-    def __init__(self):
-        """ """
-        self.conn = get_db_connection()
-        self.db = Database(self.conn)
-        self.nodes = Nodes(self.conn)
+    def __init__(self, db: Database | None = None):
+        """Initialize the agent graph helpers."""
+        if db is None:
+            self.db = Database(get_db_connection())
+            self._owns_db = True
+        else:
+            self.db = db
+            self._owns_db = False
+        self.nodes = Nodes(self.db)
 
     def close(self):
-        self.conn.close()
+        if getattr(self, "_owns_db", False):
+            self.db.close()
 
     def build_german_graph(self):
         builder = StateGraph(GermanGrammerDetails, input=UserQuery)

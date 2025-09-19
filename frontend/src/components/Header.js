@@ -1,13 +1,13 @@
 import React from 'react';
 
 function Header({ current, setCurrent }) {
-  const tabs = ["Home", "Train", "Review", "Completed", "Settings"];
+  const tabs = ["Dashboard", "Sentence Lab", "Assignments", "Scenarios"];
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-gray-800">German AI Assistant</h1>
+            <h1 className="text-2xl font-bold text-gray-800">LexiLearn</h1>
           </div>
           <nav className="hidden md:flex md:space-x-8">
             {tabs.map((t) => (

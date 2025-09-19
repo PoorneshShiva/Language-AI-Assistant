@@ -28,7 +28,7 @@ from lexilearn.models.common import (
 
 
 class Nodes:
-    def __init__(self, conn):
+    def __init__(self, db):
         self.sys_prompt = SysPrompts()
         self.llm = ChatOllama(
             model="gemma3",
@@ -42,7 +42,7 @@ class Nodes:
             print("Downloading language model for the first time. This may take a few minutes.")
             spacy.cli.download("de_core_news_lg")
             self.nlp = spacy.load("de_core_news_lg")
-        self.db = Database(conn)
+        self.db = db if isinstance(db, Database) else Database(db)
 
     def get_lemma(self, word: str) -> str:
         doc = self.nlp(word)

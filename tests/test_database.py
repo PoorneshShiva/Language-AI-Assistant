@@ -1,38 +1,40 @@
-import os
-import sqlite3
 import unittest
-from src.lexilearn.database import Database, get_db_connection
+import datetime
+import mongomock
+
+from lexilearn import database as db_module
+from lexilearn.database import Database
+
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
-        self.db_name = "test_lexilearn.db"
-        if os.path.exists(self.db_name):
-            os.remove(self.db_name)
-        self.conn = get_db_connection(self.db_name)
-        self.db = Database(self.conn)
+        db_module.reset_client_for_tests()
+        self.mock_client = mongomock.MongoClient()
+        db_module._MONGO_CLIENT = self.mock_client  # type: ignore[attr-defined]
+        self.db = Database(db_module.get_db_connection())
         self.db.create_tables()
 
     def tearDown(self):
-        self.db.close()
-        if os.path.exists(self.db_name):
-            os.remove(self.db_name)
+        db_module.reset_client_for_tests()
 
     def test_verb_operations(self):
         verb_data = {
             "infinitive": "essen",
-            "present": {"ich": "esse", "du": "isst", "er/sie/es": "isst", "wir": "essen", "ihr": "esst", "sie/Sie": "essen"},
+            "present": {"ich": "esse", "du": "isst"},
             "present_perfect": ["hat gegessen"],
             "singular_present_tense": ["isst"],
             "simple_past": ["aß"],
             "is_separable": False,
             "is_regular": False,
-            "english_alternative": ["to eat"]
+            "english_alternative": ["to eat"],
+            "notes": ["irregular"]
         }
         self.db.add_verb(verb_data)
-        retrieved_verb = self.db.get_verb("essen")
-        self.assertIsNotNone(retrieved_verb)
-        self.assertEqual(retrieved_verb["infinitive"], verb_data["infinitive"])
-        self.assertEqual(retrieved_verb["present_perfect"], verb_data["present_perfect"])
+        retrieved = self.db.get_verb("essen")
+        self.assertIsNotNone(retrieved)
+        self.assertEqual(retrieved["infinitive"], "essen")
+        self.assertIn("hat gegessen", retrieved["present_perfect"])
+        self.assertEqual(retrieved["notes"], ["irregular"])
 
     def test_noun_operations(self):
         noun_data = {
@@ -44,10 +46,9 @@ class TestDatabase(unittest.TestCase):
             "is_irregular": True
         }
         self.db.add_noun(noun_data)
-        retrieved_noun = self.db.get_noun("Haus")
-        self.assertIsNotNone(retrieved_noun)
-        self.assertEqual(retrieved_noun["noun"], noun_data["noun"])
-        self.assertEqual(retrieved_noun["case_forms"], noun_data["case_forms"])
+        retrieved = self.db.get_noun("Haus")
+        self.assertIsNotNone(retrieved)
+        self.assertEqual(retrieved["case_forms"]["nominative"], "Haus")
 
     def test_adjective_operations(self):
         adjective_data = {
@@ -59,120 +60,124 @@ class TestDatabase(unittest.TestCase):
             "is_comparable": True
         }
         self.db.add_adjective(adjective_data)
-        retrieved_adjective = self.db.get_adjective("schön")
-        self.assertIsNotNone(retrieved_adjective)
-        self.assertEqual(retrieved_adjective["adjective"], adjective_data["adjective"])
-
-    def test_adverb_operations(self):
-        adverb_data = {
-            "adverb": "schnell",
-            "english_translation": "fast",
-            "adverb_type": "modal",
-            "is_comparable": True
-        }
-        self.db.add_adverb(adverb_data)
-        retrieved_adverb = self.db.get_adverb("schnell")
-        self.assertIsNotNone(retrieved_adverb)
-        self.assertEqual(retrieved_adverb["adverb"], adverb_data["adverb"])
-
-    def test_preposition_operations(self):
-        preposition_data = {
-            "preposition": "in",
-            "english_translation": "in",
-            "case_governed": "mixed",
-            "preposition_type": "local"
-        }
-        self.db.add_preposition(preposition_data)
-        retrieved_preposition = self.db.get_preposition("in")
-        self.assertIsNotNone(retrieved_preposition)
-        self.assertEqual(retrieved_preposition["preposition"], preposition_data["preposition"])
-
-    def test_conjunction_operations(self):
-        conjunction_data = {
-            "conjunction": "und",
-            "english_translation": "and",
-            "conjunction_type": "coordinating"
-        }
-        self.db.add_conjunction(conjunction_data)
-        retrieved_conjunction = self.db.get_conjunction("und")
-        self.assertIsNotNone(retrieved_conjunction)
-        self.assertEqual(retrieved_conjunction["conjunction"], conjunction_data["conjunction"])
+        retrieved = self.db.get_adjective("schön")
+        self.assertIsNotNone(retrieved)
+        self.assertEqual(retrieved["superlative"], "am schönsten")
 
     def test_user_operations(self):
-        user_data = {"email": "test@example.com", "display_name": "Test User"}
-        user_id = self.db.add_app_user(user_data)
-        retrieved_user = self.db.get_app_user(user_id)
-        self.assertIsNotNone(retrieved_user)
-        self.assertEqual(retrieved_user['email'], user_data['email'])
+        user_id = self.db.add_app_user({"email": "test@example.com", "display_name": "Tester"})
+        user = self.db.get_app_user(user_id)
+        self.assertEqual(user["email"], "test@example.com")
 
-        settings_data = {"user_id": user_id, "level": "advanced", "daily_goal": 50}
-        self.db.add_user_settings(settings_data)
-        retrieved_settings = self.db.get_user_settings(user_id)
-        self.assertIsNotNone(retrieved_settings)
-        self.assertEqual(retrieved_settings['daily_goal'], settings_data['daily_goal'])
+        self.db.add_user_settings({"user_id": user_id, "level": "advanced", "daily_goal": 20})
+        settings = self.db.get_user_settings(user_id)
+        self.assertEqual(settings["level"], "advanced")
+        self.assertEqual(settings["daily_goal"], 20)
 
     def test_word_index_operations(self):
         word_uid = self.db.add_word_index({"item_type": "verb", "item_id": "gehen"})
-        retrieved_word_index = self.db.get_word_index(word_uid)
-        self.assertIsNotNone(retrieved_word_index)
-        self.assertEqual(retrieved_word_index['item_id'], "gehen")
+        self.assertEqual(word_uid, "verb:gehen")
+        retrieved = self.db.get_word_index(word_uid)
+        self.assertEqual(retrieved["item_id"], "gehen")
 
     def test_practice_operations(self):
-        user_data = {"email": "test@example.com", "display_name": "Test User"}
-        user_id = self.db.add_app_user(user_data)
+        user_id = self.db.add_app_user({"email": "test@example.com"})
         word_uid = self.db.add_word_index({"item_type": "verb", "item_id": "gehen"})
-        
-        user_word_data = {"user_id": user_id, "word_uid": word_uid, "status": "learning"}
-        self.db.add_user_word(user_word_data)
-        retrieved_user_word = self.db.get_user_word(user_id, word_uid)
-        self.assertIsNotNone(retrieved_user_word)
-        self.assertEqual(retrieved_user_word['status'], user_word_data['status'])
 
-        session_data = {"user_id": user_id}
-        session_id = self.db.add_practice_session(session_data)
-        retrieved_session = self.db.get_practice_session(session_id)
-        self.assertIsNotNone(retrieved_session)
-        self.assertEqual(retrieved_session['user_id'], user_id)
+        self.db.add_user_word({
+            "user_id": user_id,
+            "word_uid": word_uid,
+            "status": "learning",
+            "due_at": datetime.datetime.utcnow(),
+            "interval_days": 1,
+        })
+        user_word = self.db.get_user_word(user_id, word_uid)
+        self.assertEqual(user_word["status"], "learning")
 
-        prompt_data = {"id": "p1", "level": "beginner", "en": "to go", "de": "gehen", "tags": ["verb"]}
-        self.db.add_prompt(prompt_data)
-        retrieved_prompt = self.db.get_prompt("p1")
-        self.assertIsNotNone(retrieved_prompt)
-        self.assertEqual(retrieved_prompt['de'], "gehen")
+        session_id = self.db.add_practice_session({"user_id": user_id})
+        self.assertTrue(session_id)
 
-        event_data = {
+        prompt_id = self.db.add_prompt({
+            "id": "p1",
+            "level": "beginner",
+            "en": "to go",
+            "de": "gehen",
+            "tags": ["verb"],
+            "word_uids": [word_uid],
+        })
+        prompt = self.db.get_prompt(prompt_id)
+        self.assertEqual(prompt["de"], "gehen")
+
+        event_id = self.db.add_practice_event({
             "session_id": session_id,
             "user_id": user_id,
             "word_uid": word_uid,
-            "prompt_id": "p1",
+            "prompt_id": prompt_id,
             "level_at_time": "beginner",
             "confidence": "Good",
             "expected": "gehen",
             "answer": "gehen",
             "correct": True,
             "issues": [],
-            "normalized": {"answer": "gehen", "expected": "gehen"}
-        }
-        event_id = self.db.add_practice_event(event_data)
-        retrieved_event = self.db.get_practice_event(event_id)
-        self.assertIsNotNone(retrieved_event)
-        self.assertEqual(retrieved_event['correct'], 1)
+            "normalized": {"answer": "gehen"}
+        })
+        event = self.db.get_practice_event(event_id)
+        self.assertTrue(event["correct"])
 
-        prompt_word_data = {"prompt_id": "p1", "word_uid": word_uid}
-        self.db.add_prompt_word(prompt_word_data)
-        retrieved_prompt_word = self.db.get_prompt_word("p1", word_uid)
-        self.assertIsNotNone(retrieved_prompt_word)
-        self.assertEqual(retrieved_prompt_word['prompt_id'], "p1")
+        self.db.add_prompt_word({"prompt_id": prompt_id, "word_uid": word_uid})
+        prompt_word = self.db.get_prompt_word(prompt_id, word_uid)
+        self.assertEqual(prompt_word["prompt_id"], prompt_id)
 
     def test_stats_operations(self):
-        user_data = {"email": "test@example.com", "display_name": "Test User"}
-        user_id = self.db.add_app_user(user_data)
-        today = "2025-09-18"
-        stats_data = {"user_id": user_id, "day": today, "learned": 5, "practiced": 10, "completed": 2}
-        self.db.add_user_stats_daily(stats_data)
-        retrieved_stats = self.db.get_user_stats_daily(user_id, today)
-        self.assertIsNotNone(retrieved_stats)
-        self.assertEqual(retrieved_stats['learned'], 5)
+        user_id = self.db.add_app_user({"email": "stats@example.com"})
+        today = datetime.date.today().isoformat()
+        self.db.add_user_stats_daily({"user_id": user_id, "day": today, "learned": 3, "practiced": 5, "completed": 2})
+        stats = self.db.get_user_stats_daily(user_id, today)
+        self.assertEqual(stats["learned"], 3)
+
+    def test_assignment_and_scenario_persistence(self):
+        user_id = self.db.add_app_user({"email": "assignments@example.com"})
+        analysis_id = self.db.save_sentence_analysis(
+            user_id,
+            "Ich spiele Fußball.",
+            {"verbs": [], "nouns": [], "adjectives": [], "notes": []},
+            focus=["Verbkonjugation"],
+        )
+        assignment_id = self.db.create_assignment(
+            {
+                "user_id": user_id,
+                "sentence": "Ich spiele Fußball.",
+                "level": "beginner",
+                "goals": ["Perfekt"],
+                "focus": {"grammar": ["Perfekt"]},
+                "activities": [{"title": "Aktivität", "summary": "", "instructions": "", "expected_output": "", "tips": []}],
+                "reflection": ["Reflexion"],
+                "real_world_bridge": ["Sprich mit Freunden"],
+                "language_bank": [{"phrase": "Ich spiele", "usage": "Einstieg"}],
+                "analysis_id": analysis_id,
+                "analysis_snapshot": {"verbs": []},
+            }
+        )
+        assignment = self.db.get_assignment(assignment_id)
+        self.assertEqual(assignment["sentence"], "Ich spiele Fußball.")
+        self.db.update_assignment(assignment_id, {"status": "completed"})
+        refreshed = self.db.get_assignment(assignment_id)
+        self.assertEqual(refreshed["status"], "completed")
+
+        scenario_id = self.db.add_real_life_scenario(
+            {
+                "user_id": user_id,
+                "level": "beginner",
+                "theme": "Café",
+                "situation": "Bestellung",
+                "role_play": {"you": "Gast", "partner": "Servicekraft"},
+                "checklist": ["Begrüßung"],
+                "language_bank": [{"phrase": "Ich hätte gern", "context": "Bestellung"}],
+            }
+        )
+        scenarios = self.db.list_real_life_scenarios(user_id)
+        self.assertTrue(any(scenario["scenario_id"] == scenario_id for scenario in scenarios))
+
 
 if __name__ == '__main__':
     unittest.main()

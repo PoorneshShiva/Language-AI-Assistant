@@ -1,5 +1,5 @@
 import strawberry
-from typing import Optional
+from typing import Optional, cast
 from lexilearn.utils.agents.main import AgenticMain
 from lexilearn.database import Database
 from lexilearn.graphql.types.grammar_types import VerbType, NounType, AdjectiveType
@@ -21,7 +21,7 @@ class GrammarQuery:
 
     @strawberry.field
     def get_verb(self, info: strawberry.Info, infinitive: str) -> Optional[VerbType]:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         verb_data = db.get_verb(infinitive)
         if verb_data:
             return VerbType(**verb_data)
@@ -29,7 +29,7 @@ class GrammarQuery:
 
     @strawberry.field
     def get_noun(self, info: strawberry.Info, noun: str) -> Optional[NounType]:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         noun_data = db.get_noun(noun)
         if noun_data:
             return NounType(**noun_data)
@@ -37,7 +37,7 @@ class GrammarQuery:
 
     @strawberry.field
     def get_adjective(self, info: strawberry.Info, adjective: str) -> Optional[AdjectiveType]:
-        db = Database(info.context["conn"])
+        db = cast(Database, info.context["db"])
         adjective_data = db.get_adjective(adjective)
         if adjective_data:
             return AdjectiveType(**adjective_data)

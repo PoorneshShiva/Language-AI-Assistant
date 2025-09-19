@@ -1,25 +1,9 @@
-"""Main module for the LexiLearn FastAPI application.
-
-This module initializes the FastAPI application and defines the main routes.
-It also includes the Uvicorn server setup for running the application.
-"""
-from typing import Union
-from fastapi import FastAPI, Depends, Request
+"""Main module for the LexiLearn FastAPI application."""
+import argparse
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import Response
 import uvicorn
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.ext.asyncio import (async_sessionmaker,
-                                    create_async_engine,
-                                    AsyncSession)
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.future import select
-from pydantic import BaseModel
-import argparse
-import os
-import sqlite3
-import anyio
 
 
 app = FastAPI()
@@ -41,35 +25,36 @@ app.add_middleware(
 # GraphQL imports
 from strawberry.fastapi import GraphQLRouter
 from lexilearn.utils.agents.main import AgenticMain
-from lexilearn.graphql.schema import schema # Your GraphQL schema
+from lexilearn.graphql.schema import schema  # Your GraphQL schema
 from lexilearn.rest.api import router as rest_router
 from lexilearn.database import Database, get_db_connection
 
+
 async def get_context():
-    conn = get_db_connection() # Get the connection directly
+    """Provide GraphQL resolvers with shared utilities for each request."""
+    db = Database(get_db_connection())
+    agent_main = AgenticMain(db)
     try:
-        agent_main = AgenticMain(conn)
         yield {
-            "conn": conn,
-            "agent_main": agent_main
+            "db": db,
+            "agent_main": agent_main,
         }
     finally:
-        conn.close()
+        agent_main.close()
 
 # Setup GraphQL route
-graphql_app = GraphQLRouter(schema, graphiql=True, context_getter=get_context) # graphiql=True enables the interactive UI
+graphql_app = GraphQLRouter(schema, graphiql=True, context_getter=get_context)  # graphiql=True enables the interactive UI
 app.include_router(graphql_app, prefix="/graphql")
-app.include_router(rest_router, prefix="/api") # Added prefix here
+app.include_router(rest_router, prefix="/api")  # Added prefix here
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
     response = Response("Internal server error", status_code=500)
     try:
-        request.state.db_connection = get_db_connection()
-        request.state.agent_main = AgenticMain()
+        request.state.db = Database(get_db_connection())
+        request.state.agent_main = AgenticMain(request.state.db)
         response = await call_next(request)
     finally:
-        request.state.db_connection.close()
         request.state.agent_main.close()
     return response
 
@@ -82,8 +67,6 @@ async def root():
         str: A welcome message.
     """
     return "Welcome to lexilearn"
-
-DB_NAME = "lexilearn.db"
 
 def populate_database(db: Database):
     # Add a default user
@@ -149,15 +132,10 @@ def main():
     parser.add_argument("--workers", type=int, default=6, help="Number of worker processes")
     args = parser.parse_args()
 
-    # Initialize and populate database if it doesn't exist
-    if not os.path.exists(DB_NAME):
-        print(f"Database {DB_NAME} not found. Creating and populating...")
-        conn = sqlite3.connect(DB_NAME)
-        db = Database(conn)
-        db.create_tables()
-        populate_database(db)
-        conn.close()
-        print("Database populated.")
+    # Ensure indexes exist and seed canonical data
+    db = Database(get_db_connection())
+    db.create_tables()
+    populate_database(db)
 
     uvicorn.run(
             "lexilearn.main:app",

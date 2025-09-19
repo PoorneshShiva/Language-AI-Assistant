@@ -3,15 +3,16 @@
 ## Project Structure & Module Organization
 - `src/lexilearn/` contains the FastAPI backend with subpackages `database/`, `graph_nodes/`, `graphql/`, `rest/`, and `utils/agents/`; the entrypoint is `main.py`.
 - `frontend/` is a Create React App; shared UI lives in `frontend/src/components/`, and API helpers in `frontend/src/api.js`.
-- `tests/` hosts backend pytest suites and fixtures in `tests/models/`; SQLite seed data ships in `lexilearn.db`.
-- Reference material stays in `docs/` and `notebooks/`, while runtime logs belong under `logs/`.
+- `tests/` hosts backend pytest suites (Mongo fixtures in `tests/test_database.py`, API coverage in `tests/test_api.py`).
+- `docker-compose.yml` provisions a MongoDB container with data stored in the `mongo-data/` volume.
 
 ## Build, Test, and Development Commands
 - `poetry install` resolves Python (>=3.12) dependencies from `pyproject.toml`.
+- `docker compose up mongo` starts the database container.
 - `poetry run lexilearn --host 127.0.0.1 --port 8000` serves the API; add `--reload` locally for auto-restarts.
 - `poetry run pytest` runs backend tests; narrow scope with `-k name` during iteration.
 - From `frontend/`, run `npm install`, `npm start` for the dev server, and `npm run build` for production bundles.
-- `./start.sh` launches backend and frontend together for end-to-end checks.
+- `./start.sh` launches backend and frontend together for end-to-end checks (expects Mongo to already be running).
 
 ## Coding Style & Naming Conventions
 - Follow PEP 8 with 4-space indents, docstrings, and type hints; mirror the patterns in `src/lexilearn/main.py`.
@@ -31,5 +32,6 @@
 
 ## Environment & Configuration
 - Secrets for Google, Ollama, or Hugging Face belong in a local `.env`; `lexilearn/utils/agents/model.py` loads them with `python-dotenv`.
+- Set `MONGODB_URI` (e.g. `mongodb://lexilearn:lexilearn@localhost:27017/lexilearn?authSource=admin`) and `MONGODB_DB` when deviating from the defaults.
 - Do not commit `.env` files or raw keys; document expected variable names instead.
 - Logs roll to `logs/file_<time>.log`; add new sinks through `src/lexilearn/config/config.py` when needed.

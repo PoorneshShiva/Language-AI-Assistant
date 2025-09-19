@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, HTTPException
+from fastapi import APIRouter, Request, HTTPException
 import datetime
 from lexilearn.rest.models import SuccessResponse, SettingsData, PatchSettingsRequest, StatsData, TodayStats, TotalStats
 from lexilearn.database import Database
@@ -7,7 +7,7 @@ router = APIRouter()
 
 @router.get("/settings", response_model=SuccessResponse[SettingsData])
 async def get_settings(request_obj: Request):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
     
     user_settings = db.get_user_settings(user_id)
@@ -29,7 +29,7 @@ async def get_settings(request_obj: Request):
 
 @router.patch("/settings", response_model=SuccessResponse[SettingsData])
 async def patch_settings(request: PatchSettingsRequest, request_obj: Request):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
     
     # Get current settings
@@ -42,19 +42,13 @@ async def patch_settings(request: PatchSettingsRequest, request_obj: Request):
     update_data = request.dict(exclude_unset=True)
     updated_settings = {**user_settings, **update_data}
     
-    db.conn.execute("""
-        UPDATE user_settings
-        SET level = ?, daily_goal = ?, style = ?, review_enabled = ?, updated_at = ?
-        WHERE user_id = ?
-    """, (
-        updated_settings['level'],
-        updated_settings['daily_goal'],
-        updated_settings['style'],
-        updated_settings['review_enabled'],
-        datetime.datetime.now().isoformat(),
-        user_id
-    ))
-    db.conn.commit()
+    db.update_user_settings(
+        user_id,
+        level=updated_settings['level'],
+        daily_goal=updated_settings['daily_goal'],
+        style=updated_settings['style'],
+        review_enabled=updated_settings['review_enabled']
+    )
 
     return SuccessResponse(
         data=SettingsData(**updated_settings)
@@ -62,7 +56,7 @@ async def patch_settings(request: PatchSettingsRequest, request_obj: Request):
 
 @router.get("/stats", response_model=SuccessResponse[StatsData])
 async def get_stats(request_obj: Request):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
 
     # Today's stats
@@ -72,27 +66,19 @@ async def get_stats(request_obj: Request):
         today_stats = {"learned": 0, "practiced": 0, "completed": 0}
 
     # Total stats
-    cursor = db.conn.cursor()
-    
-    # Total learned
-    cursor.execute("SELECT COUNT(*) FROM user_word WHERE user_id = ? AND status IN ('learning', 'queued', 'completed')", (user_id,))
-    total_learned = cursor.fetchone()[0]
-    
-    # Total completed
-    cursor.execute("SELECT COUNT(*) FROM user_word WHERE user_id = ? AND status = 'completed'", (user_id,))
-    total_completed = cursor.fetchone()[0]
-    
-    # Total in queue
-    cursor.execute("SELECT COUNT(*) FROM user_word WHERE user_id = ? AND status IN ('queued', 'learning')", (user_id,))
-    total_in_queue = cursor.fetchone()[0]
+    totals = db.get_total_stats(user_id)
 
     return SuccessResponse(
         data=StatsData(
-            today=TodayStats(**today_stats),
+            today=TodayStats(**{
+                "learned": today_stats.get("learned", 0),
+                "practiced": today_stats.get("practiced", 0),
+                "completed": today_stats.get("completed", 0),
+            }),
             totals=TotalStats(
-                learned=total_learned,
-                completed=total_completed,
-                in_queue=total_in_queue
+                learned=totals.get("learned", 0),
+                completed=totals.get("completed", 0),
+                in_queue=totals.get("in_queue", 0)
             )
         )
     )

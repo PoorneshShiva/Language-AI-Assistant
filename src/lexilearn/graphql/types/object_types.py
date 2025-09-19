@@ -102,3 +102,39 @@ class NounHintType:
     fallback: str
     label: str
     insert: str
+
+@strawberry.type
+class Example:
+    de: str
+    en: str
+
+@strawberry.type
+class Word:
+    id: strawberry.ID
+    lemma: str
+    pos: str
+    translations_en: List[str]
+    grammar: JSON
+    examples: List[Example]
+    surface_forms: List[str]
+    created_at: str
+    updated_at: str
+
+@strawberry.type
+class ProgressEvent:
+    event: str
+    score: float
+    at: str
+
+@strawberry.type
+class UserWordProgress:
+    id: strawberry.ID
+    user_id: strawberry.ID
+    word: Word
+    status: str
+    confidence: float
+    added_at: str
+    learned_at: Optional[str]
+    srs_stage: int
+    next_review_at: Optional[str]
+    history: List[ProgressEvent]

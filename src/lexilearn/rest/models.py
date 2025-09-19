@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Literal, TypeVar, Generic, Optional, Dict
+from typing import Any, List, Literal, TypeVar, Generic, Optional, Dict
 
 T = TypeVar('T')
 
@@ -13,7 +13,7 @@ class DetectWordsRequest(BaseModel):
     exclude_keys: List[str] = []
 
 class DetectedWord(BaseModel):
-    type: Literal["verb", "noun"]
+    type: Literal["verb", "noun", "adjective"]
     id: str
 
 class DetectWordsData(BaseModel):
@@ -230,8 +230,81 @@ class StatsData(BaseModel):
     today: TodayStats
     totals: TotalStats
 
-class PatchSettingsRequest(BaseModel):
-    level: Optional[Literal["beginner", "advanced"]] = None
-    daily_goal: Optional[int] = None
-    style: Optional[str] = None
-    review_enabled: Optional[bool] = None
+class GrammarEntry(BaseModel):
+    lemma: str
+    label: str
+    explanation: str
+
+
+class SentenceAnalysisData(BaseModel):
+    analysis_id: str
+    sentence: str
+    tokens: List[str]
+    verbs: List[GrammarEntry]
+    nouns: List[GrammarEntry]
+    adjectives: List[GrammarEntry]
+    notes: List[str]
+    focus: List[str]
+    created_at: str
+
+
+class SentenceAnalyzeRequest(BaseModel):
+    sentence: str
+    level: Literal["beginner", "intermediate", "advanced"] = "beginner"
+    goals: List[str] = []
+
+
+class AssignmentActivity(BaseModel):
+    title: str
+    summary: str
+    instructions: str
+    expected_output: str
+    tips: List[str] = []
+    iteration_prompt: Optional[str] = None
+
+
+class AssignmentData(BaseModel):
+    assignment_id: str
+    sentence: str
+    level: str
+    goals: List[str]
+    focus: Dict[str, List[str]]
+    activities: List[AssignmentActivity]
+    reflection: List[str] = []
+    real_world_bridge: List[str] = []
+    language_bank: List[Dict[str, str]] = []
+    status: str
+    iteration: int
+    analysis_id: Optional[str] = None
+    analysis_snapshot: Optional[Dict[str, Any]] = None
+    created_at: str
+
+
+class AssignmentCreateRequest(BaseModel):
+    sentence: str
+    level: Literal["beginner", "intermediate", "advanced"] = "beginner"
+    goals: List[str] = []
+    analysis_id: Optional[str] = None
+
+
+class AssignmentProgressRequest(BaseModel):
+    status: Optional[str] = None
+    notes: Optional[str] = None
+    iteration_feedback: Optional[str] = None
+
+
+class ScenarioRequest(BaseModel):
+    level: Literal["beginner", "intermediate", "advanced"] = "beginner"
+    theme: str
+    recently_learned: List[str] = []
+
+
+class ScenarioData(BaseModel):
+    scenario_id: str
+    level: str
+    theme: str
+    situation: str
+    role_play: Dict[str, str]
+    checklist: List[str]
+    language_bank: List[Dict[str, str]]
+    created_at: str

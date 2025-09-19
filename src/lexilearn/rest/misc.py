@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Query, HTTPException, Depends, Request
+from fastapi import APIRouter, Query, HTTPException, Request
 from typing import Literal, Optional
-import random
 import uuid
 import datetime
 from lexilearn.rest.models import SuccessResponse, PromptsData, Prompt, EvaluationRequest, EvaluationData, CompletedData, CompletedItem, IgnoreRequest, IgnoreData, UnignoreRequest, UnignoreData, HintsData, Hint, VerbDetails
@@ -22,7 +21,7 @@ async def get_prompts(
     level: Literal["beginner", "advanced"],
     count: int = 1,
 ):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     if item_type == "verb":
         # Generate verb training data using LangChain
         verb_training_data = generate_verb_training_data(item_id, level)
@@ -54,34 +53,8 @@ async def get_prompts(
             data=PromptsData(prompts=[prompt])
         )
     else:
-        # Existing logic for other item types
-        # 1. Find word_uid
-        cursor = db.conn.cursor()
-        cursor.execute("SELECT word_uid FROM word_index WHERE item_type = ? AND item_id = ?", (item_type, item_id))
-        result = cursor.fetchone()
-        if not result:
-            return SuccessResponse(data=PromptsData(prompts=[]))
-        word_uid = result[0]
-
-        # 2. Find prompt_ids
-        cursor.execute("SELECT prompt_id FROM prompt_word WHERE word_uid = ?", (word_uid,))
-        prompt_ids = [row[0] for row in cursor.fetchall()]
-        if not prompt_ids:
-            return SuccessResponse(data=PromptsData(prompts=[]))
-
-        # 3. Filter prompts by level and fetch details
-        prompts = []
-        for prompt_id in prompt_ids:
-            prompt_data = db.get_prompt(prompt_id)
-            if prompt_data and prompt_data['level'] == level:
-                prompts.append(Prompt(**prompt_data))
-
-        # 4. Return `count` prompts
-        random.shuffle(prompts)
-        
-        return SuccessResponse(
-            data=PromptsData(prompts=prompts[:count])
-        )
+        prompts = [Prompt(**prompt) for prompt in db.get_prompts(item_type=item_type, item_id=item_id, level=level, count=count)]
+        return SuccessResponse(data=PromptsData(prompts=prompts))
 
 @router.post("/evaluate", response_model=SuccessResponse[EvaluationData])
 async def evaluate_answer(request: EvaluationRequest):
@@ -90,48 +63,29 @@ async def evaluate_answer(request: EvaluationRequest):
 
 @router.get("/completed", response_model=SuccessResponse[CompletedData])
 async def get_completed(request_obj: Request):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
-
-    cursor = db.conn.cursor()
-    query = """
-        SELECT wi.item_id
-        FROM user_word uw
-        JOIN word_index wi ON uw.word_uid = wi.word_uid
-        WHERE uw.user_id = ? AND uw.status = 'completed'
-        ORDER BY uw.updated_at DESC
-    """
-    
-    cursor.execute(query, (user_id,))
-    
     items = []
-    for row in cursor.fetchall():
-        items.append(CompletedItem(
-            type=row[0],
-            id=row[1],
-            completed_at=row[2]
-        ))
-        
+    for entry in db.completed_list(user_id):
+        completed_at = entry.get("updated_at") or datetime.datetime.utcnow()
+        items.append(
+            CompletedItem(
+                type=entry.get("item_type", "verb"),
+                id=entry.get("item_id", ""),
+                completed_at=completed_at.isoformat(),
+            )
+        )
+
     return SuccessResponse(
         data=CompletedData(items=items)
     )
 
 @router.post("/ignore", response_model=SuccessResponse[IgnoreData])
 async def post_ignore(request: IgnoreRequest, request_obj: Request):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
-
-    # 1. Find word_uid
-    cursor = db.conn.cursor()
-    cursor.execute("SELECT word_uid FROM word_index WHERE item_type = ? AND item_id = ?", (request.item.type, request.item.id))
-    result = cursor.fetchone()
-    if not result:
-        raise HTTPException(status_code=404, detail="Word not found")
-    word_uid = result[0]
-
-    # 2. Update user_word status to 'ignored'
-    db.conn.execute("UPDATE user_word SET status = 'ignored' WHERE user_id = ? AND word_uid = ?", (user_id, word_uid))
-    db.conn.commit()
+    word_uid = db.add_word_index({"item_type": request.item.type, "item_id": request.item.id})
+    db.update_user_word(user_id, word_uid, status="ignored", due_at=None)
     
     return SuccessResponse(
         data=IgnoreData(status="ignored")
@@ -139,20 +93,10 @@ async def post_ignore(request: IgnoreRequest, request_obj: Request):
 
 @router.delete("/ignore", response_model=SuccessResponse[UnignoreData])
 async def delete_ignore(request: UnignoreRequest, request_obj: Request):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
-
-    # 1. Find word_uid
-    cursor = db.conn.cursor()
-    cursor.execute("SELECT word_uid FROM word_index WHERE item_type = ? AND item_id = ?", (request.item.type, request.item.id))
-    result = cursor.fetchone()
-    if not result:
-        raise HTTPException(status_code=404, detail="Word not found")
-    word_uid = result[0]
-
-    # 2. Update user_word status to 'new'
-    db.conn.execute("UPDATE user_word SET status = 'new' WHERE user_id = ? AND word_uid = ?", (user_id, word_uid))
-    db.conn.commit()
+    word_uid = db.add_word_index({"item_type": request.item.type, "item_id": request.item.id})
+    db.update_user_word(user_id, word_uid, status="new")
     
     return SuccessResponse(
         data=UnignoreData(status="unignored")
@@ -165,55 +109,40 @@ async def get_hints_nouns(
     cases: Optional[str] = Query(None),
     limit: int = 20,
 ):
-    db = Database(request_obj.state.db_connection)
+    db: Database = request_obj.state.db
     user_id = "test_user" # Hardcoded user for now
-
     # 1. Get learned nouns for the user
-    cursor = db.conn.cursor()
-    
-    query = """
-        SELECT wi.item_id
-        FROM user_word uw
-        JOIN word_index wi ON uw.word_uid = wi.word_uid
-        WHERE uw.user_id = ? AND wi.item_type = 'noun' AND uw.status IN ('queued', 'learning', 'completed')
-    """
-    
+    nouns = db.noun_hints(user_id, limit=None)
     if scope == "recent":
-        seven_days_ago = (datetime.datetime.now() - datetime.timedelta(days=7)).isoformat()
-        query += " AND uw.added_at >= ?"
-        cursor.execute(query, (user_id, seven_days_ago))
-    else:
-        cursor.execute(query, (user_id,))
-        
-    learned_nouns = [row[0] for row in cursor.fetchall()]
-    
-    if not learned_nouns:
+        threshold = datetime.datetime.utcnow() - datetime.timedelta(days=7)
+        nouns = [noun for noun in nouns if noun.get("added_at") and noun["added_at"] >= threshold]
+
+    if not nouns:
         return SuccessResponse(data=HintsData(hints=[]))
 
     # 2. Get noun details and format hints
     hints = []
-    
+
     requested_cases = []
     if cases:
         requested_cases = [c.strip() for c in cases.split(',')]
 
-    for noun_id in learned_nouns:
-        noun_details = db.get_noun(noun_id)
-        if noun_details:
-            label = f"{noun_details['gender']} {noun_details['noun']}"
-            
-            case_hints = []
-            if 'accusative' in requested_cases:
-                case_hints.append(f"acc: {noun_details['case_forms']['accusative']}")
-            if 'dative' in requested_cases:
-                case_hints.append(f"dat: {noun_details['case_forms']['dative']}")
-            if 'genitive' in requested_cases:
-                case_hints.append(f"gen: {noun_details['case_forms']['genitive']}")
+    for noun_details in nouns:
+        label = f"{noun_details['gender']} {noun_details['noun']}".strip()
 
-            if case_hints:
-                label += f" ({ ', '.join(case_hints) })"
-            
-            hints.append(Hint(label=label, insert=noun_details['noun']))
+        case_hints = []
+        if 'accusative' in requested_cases:
+            case_hints.append(f"acc: {noun_details['case_forms'].get('accusative', '')}")
+        if 'dative' in requested_cases:
+            case_hints.append(f"dat: {noun_details['case_forms'].get('dative', '')}")
+        if 'genitive' in requested_cases:
+            case_hints.append(f"gen: {noun_details['case_forms'].get('genitive', '')}")
+
+        filtered_case_hints = [hint for hint in case_hints if hint and not hint.endswith(': ')]
+        if filtered_case_hints:
+            label += f" ({', '.join(filtered_case_hints)})"
+
+        hints.append(Hint(label=label.strip(), insert=noun_details['noun']))
 
     return SuccessResponse(
         data=HintsData(hints=hints[:limit])
