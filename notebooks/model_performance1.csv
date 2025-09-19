@@ -1,0 +1,181 @@
+,predicted,actual,question,time_taken,model
+0,opinion,opinion,What do you think is the most impactful technological innovation of the 21st century?,0 days 00:00:09.728335,llama3.2
+1,opinion,opinion,"In your opinion, which actor portrayed the best version of Sherlock Holmes?",0 days 00:00:00.711960,llama3.2
+2,opinion,opinion,Do you believe social media has a positive or negative impact on society?,0 days 00:00:00.638862,llama3.2
+3,opinion,opinion,"Which music genre do you prefer, and why?",0 days 00:00:00.577049,llama3.2
+4,opinion,opinion,What is the best way to improve the education system?,0 days 00:00:00.609614,llama3.2
+5,opinion,opinion,Why do people like artifical intelligence,0 days 00:00:00.526720,llama3.2
+6,opinion,opinion,Do you think space exploration is worth the investment?,0 days 00:00:00.549679,llama3.2
+7,opinion,opinion,"Which is more important, individual rights or national security?",0 days 00:00:00.593836,llama3.2
+8,opinion,opinion,What do you think is the most important quality in a leader?,0 days 00:00:00.628869,llama3.2
+9,opinion,opinion,What is your opinion on the role of artificial intelligence in society?,0 days 00:00:00.622318,llama3.2
+10,analytical,analytical,How does the portrayal of artificial intelligence in movies compare to its actual development in technology?,0 days 00:00:00.686778,llama3.2
+11,analytical,analytical,What are the main differences in leadership styles between Steve Jobs and Elon Musk?,0 days 00:00:00.656096,llama3.2
+12,analytical,analytical,How do the themes of love and sacrifice manifest differently in 'Romeo and Juliet' and 'The Great Gatsby'?,0 days 00:00:00.818150,llama3.2
+13,analytical,analytical,In what ways has the COVID-19 pandemic influenced global economic policies?,0 days 00:00:00.617851,llama3.2
+14,analytical,analytical,How does the structure of '1984' contribute to the novel's dystopian themes?,0 days 00:00:00.687793,llama3.2
+15,analytical,analytical,How does renewable energy impact global economies compared to fossil fuels?,0 days 00:00:00.569738,llama3.2
+16,analytical,analytical,What are the advantages and disadvantages of a globalized economy?,0 days 00:00:00.590204,llama3.2
+17,analytical,analytical,How do cultural differences shape international business practices?,0 days 00:00:00.540074,llama3.2
+18,analytical,analytical,What are the ethical considerations of gene editing technology?,0 days 00:00:00.561328,llama3.2
+19,opinion,analytical,How does the portrayal of women in media influence societal expectations?,0 days 00:00:00.585965,llama3.2
+20,factual,factual,What year did the Titanic sink?,0 days 00:00:00.532513,llama3.2
+21,factual,factual,Who is the current president of France?,0 days 00:00:00.521083,llama3.2
+22,factual,factual,How many planets are there in our solar system?,0 days 00:00:00.581160,llama3.2
+23,factual,factual,What is the capital city of Japan?,0 days 00:00:00.542604,llama3.2
+24,factual,factual,When was the Declaration of Independence signed?,0 days 00:00:00.535177,llama3.2
+25,factual,factual,Who invented the telephone?,0 days 00:00:00.500282,llama3.2
+26,factual,factual,What is the tallest mountain in the world?,0 days 00:00:00.543344,llama3.2
+27,factual,factual,What is the chemical formula for water?,0 days 00:00:00.502682,llama3.2
+28,factual,factual,Which country hosted the 2016 Summer Olympics?,0 days 00:00:00.565309,llama3.2
+29,factual,factual,What is the largest ocean on Earth?,0 days 00:00:00.552622,llama3.2
+30,opinion,opinion,What do you think is the most impactful technological innovation of the 21st century?,0 days 00:02:32.859920,qwq
+31,opinion,opinion,"In your opinion, which actor portrayed the best version of Sherlock Holmes?",0 days 00:01:06.816904,qwq
+32,opinion,opinion,Do you believe social media has a positive or negative impact on society?,0 days 00:01:21.278865,qwq
+33,opinion,opinion,"Which music genre do you prefer, and why?",0 days 00:00:39.645892,qwq
+34,opinion,opinion,What is the best way to improve the education system?,0 days 00:01:18.654805,qwq
+35,analytical,opinion,Why do people like artifical intelligence,0 days 00:02:48.714872,qwq
+36,opinion,opinion,Do you think space exploration is worth the investment?,0 days 00:01:45.488309,qwq
+37,analytical,opinion,"Which is more important, individual rights or national security?",0 days 00:01:37.742170,qwq
+38,opinion,opinion,What do you think is the most important quality in a leader?,0 days 00:01:23.458514,qwq
+39,opinion,opinion,What is your opinion on the role of artificial intelligence in society?,0 days 00:01:15.945595,qwq
+40,analytical,analytical,How does the portrayal of artificial intelligence in movies compare to its actual development in technology?,0 days 00:01:19.454190,qwq
+41,analytical,analytical,What are the main differences in leadership styles between Steve Jobs and Elon Musk?,0 days 00:01:47.384915,qwq
+42,analytical,analytical,How do the themes of love and sacrifice manifest differently in 'Romeo and Juliet' and 'The Great Gatsby'?,0 days 00:01:37.213438,qwq
+43,analytical,analytical,In what ways has the COVID-19 pandemic influenced global economic policies?,0 days 00:02:33.663386,qwq
+44,analytical,analytical,How does the structure of '1984' contribute to the novel's dystopian themes?,0 days 00:02:03.785503,qwq
+45,analytical,analytical,How does renewable energy impact global economies compared to fossil fuels?,0 days 00:01:41.075265,qwq
+46,analytical,analytical,What are the advantages and disadvantages of a globalized economy?,0 days 00:01:24.026356,qwq
+47,analytical,analytical,How do cultural differences shape international business practices?,0 days 00:01:27.477360,qwq
+48,analytical,analytical,What are the ethical considerations of gene editing technology?,0 days 00:01:34.112480,qwq
+49,analytical,analytical,How does the portrayal of women in media influence societal expectations?,0 days 00:01:45.683586,qwq
+50,factual,factual,What year did the Titanic sink?,0 days 00:00:42.754255,qwq
+51,factual,factual,Who is the current president of France?,0 days 00:00:31.890495,qwq
+52,factual,factual,How many planets are there in our solar system?,0 days 00:00:46.017495,qwq
+53,factual,factual,What is the capital city of Japan?,0 days 00:00:34.308534,qwq
+54,factual,factual,When was the Declaration of Independence signed?,0 days 00:00:28.315963,qwq
+55,factual,factual,Who invented the telephone?,0 days 00:00:38.999792,qwq
+56,factual,factual,What is the tallest mountain in the world?,0 days 00:00:33.769869,qwq
+57,factual,factual,What is the chemical formula for water?,0 days 00:00:36.721556,qwq
+58,factual,factual,Which country hosted the 2016 Summer Olympics?,0 days 00:00:50.597718,qwq
+59,factual,factual,What is the largest ocean on Earth?,0 days 00:00:37.727276,qwq
+60,opinion,opinion,What do you think is the most impactful technological innovation of the 21st century?,0 days 00:00:12.318246,gemma3
+61,opinion,opinion,"In your opinion, which actor portrayed the best version of Sherlock Holmes?",0 days 00:00:00.955451,gemma3
+62,opinion,opinion,Do you believe social media has a positive or negative impact on society?,0 days 00:00:00.969073,gemma3
+63,opinion,opinion,"Which music genre do you prefer, and why?",0 days 00:00:00.921252,gemma3
+64,opinion,opinion,What is the best way to improve the education system?,0 days 00:00:00.905529,gemma3
+65,opinion,opinion,Why do people like artifical intelligence,0 days 00:00:00.872270,gemma3
+66,opinion,opinion,Do you think space exploration is worth the investment?,0 days 00:00:00.874372,gemma3
+67,opinion,opinion,"Which is more important, individual rights or national security?",0 days 00:00:00.933279,gemma3
+68,opinion,opinion,What do you think is the most important quality in a leader?,0 days 00:00:01.030895,gemma3
+69,opinion,opinion,What is your opinion on the role of artificial intelligence in society?,0 days 00:00:01.021986,gemma3
+70,analytical,analytical,How does the portrayal of artificial intelligence in movies compare to its actual development in technology?,0 days 00:00:01.031292,gemma3
+71,analytical,analytical,What are the main differences in leadership styles between Steve Jobs and Elon Musk?,0 days 00:00:00.975680,gemma3
+72,analytical,analytical,How do the themes of love and sacrifice manifest differently in 'Romeo and Juliet' and 'The Great Gatsby'?,0 days 00:00:01.063031,gemma3
+73,analytical,analytical,In what ways has the COVID-19 pandemic influenced global economic policies?,0 days 00:00:00.961306,gemma3
+74,analytical,analytical,How does the structure of '1984' contribute to the novel's dystopian themes?,0 days 00:00:01.055113,gemma3
+75,analytical,analytical,How does renewable energy impact global economies compared to fossil fuels?,0 days 00:00:00.892919,gemma3
+76,analytical,analytical,What are the advantages and disadvantages of a globalized economy?,0 days 00:00:00.931443,gemma3
+77,analytical,analytical,How do cultural differences shape international business practices?,0 days 00:00:00.867281,gemma3
+78,opinion,analytical,What are the ethical considerations of gene editing technology?,0 days 00:00:00.886544,gemma3
+79,analytical,analytical,How does the portrayal of women in media influence societal expectations?,0 days 00:00:00.929377,gemma3
+80,factual,factual,What year did the Titanic sink?,0 days 00:00:00.832841,gemma3
+81,factual,factual,Who is the current president of France?,0 days 00:00:00.889273,gemma3
+82,factual,factual,How many planets are there in our solar system?,0 days 00:00:00.902888,gemma3
+83,factual,factual,What is the capital city of Japan?,0 days 00:00:00.865221,gemma3
+84,factual,factual,When was the Declaration of Independence signed?,0 days 00:00:00.858300,gemma3
+85,factual,factual,Who invented the telephone?,0 days 00:00:00.862806,gemma3
+86,factual,factual,What is the tallest mountain in the world?,0 days 00:00:00.868741,gemma3
+87,factual,factual,What is the chemical formula for water?,0 days 00:00:00.855281,gemma3
+88,factual,factual,Which country hosted the 2016 Summer Olympics?,0 days 00:00:01.022062,gemma3
+89,factual,factual,What is the largest ocean on Earth?,0 days 00:00:00.877749,gemma3
+90,opinion,opinion,What do you think is the most impactful technological innovation of the 21st century?,0 days 00:00:40.280122,phi4
+91,opinion,opinion,"In your opinion, which actor portrayed the best version of Sherlock Holmes?",0 days 00:00:03.848071,phi4
+92,opinion,opinion,Do you believe social media has a positive or negative impact on society?,0 days 00:00:03.661722,phi4
+93,opinion,opinion,"Which music genre do you prefer, and why?",0 days 00:00:03.450727,phi4
+94,analytical,opinion,What is the best way to improve the education system?,0 days 00:00:03.645948,phi4
+95,analytical,opinion,Why do people like artifical intelligence,0 days 00:00:03.390389,phi4
+96,opinion,opinion,Do you think space exploration is worth the investment?,0 days 00:00:03.566396,phi4
+97,analytical,opinion,"Which is more important, individual rights or national security?",0 days 00:00:03.539588,phi4
+98,opinion,opinion,What do you think is the most important quality in a leader?,0 days 00:00:03.669907,phi4
+99,opinion,opinion,What is your opinion on the role of artificial intelligence in society?,0 days 00:00:03.484560,phi4
+100,analytical,analytical,How does the portrayal of artificial intelligence in movies compare to its actual development in technology?,0 days 00:00:04.080011,phi4
+101,analytical,analytical,What are the main differences in leadership styles between Steve Jobs and Elon Musk?,0 days 00:00:03.722338,phi4
+102,analytical,analytical,How do the themes of love and sacrifice manifest differently in 'Romeo and Juliet' and 'The Great Gatsby'?,0 days 00:00:04.311092,phi4
+103,analytical,analytical,In what ways has the COVID-19 pandemic influenced global economic policies?,0 days 00:00:03.649153,phi4
+104,analytical,analytical,How does the structure of '1984' contribute to the novel's dystopian themes?,0 days 00:00:03.884605,phi4
+105,analytical,analytical,How does renewable energy impact global economies compared to fossil fuels?,0 days 00:00:03.350104,phi4
+106,analytical,analytical,What are the advantages and disadvantages of a globalized economy?,0 days 00:00:03.565889,phi4
+107,analytical,analytical,How do cultural differences shape international business practices?,0 days 00:00:03.256653,phi4
+108,analytical,analytical,What are the ethical considerations of gene editing technology?,0 days 00:00:03.462239,phi4
+109,analytical,analytical,How does the portrayal of women in media influence societal expectations?,0 days 00:00:03.824563,phi4
+110,factual,factual,What year did the Titanic sink?,0 days 00:00:03.360447,phi4
+111,factual,factual,Who is the current president of France?,0 days 00:00:03.335985,phi4
+112,factual,factual,How many planets are there in our solar system?,0 days 00:00:03.433295,phi4
+113,factual,factual,What is the capital city of Japan?,0 days 00:00:03.432218,phi4
+114,factual,factual,When was the Declaration of Independence signed?,0 days 00:00:03.506271,phi4
+115,factual,factual,Who invented the telephone?,0 days 00:00:03.231325,phi4
+116,factual,factual,What is the tallest mountain in the world?,0 days 00:00:03.577559,phi4
+117,factual,factual,What is the chemical formula for water?,0 days 00:00:03.245704,phi4
+118,factual,factual,Which country hosted the 2016 Summer Olympics?,0 days 00:00:03.438582,phi4
+119,factual,factual,What is the largest ocean on Earth?,0 days 00:00:03.444964,phi4
+120,opinion,opinion,What do you think is the most impactful technological innovation of the 21st century?,0 days 00:02:01.199446,deepseek-r1
+121,opinion,opinion,"In your opinion, which actor portrayed the best version of Sherlock Holmes?",0 days 00:00:27.022389,deepseek-r1
+122,opinion,opinion,Do you believe social media has a positive or negative impact on society?,0 days 00:00:23.304687,deepseek-r1
+123,opinion,opinion,"Which music genre do you prefer, and why?",0 days 00:00:21.800604,deepseek-r1
+124,analytical,opinion,What is the best way to improve the education system?,0 days 00:00:34.288800,deepseek-r1
+125,analytical,opinion,Why do people like artifical intelligence,0 days 00:00:32.186263,deepseek-r1
+126,opinion,opinion,Do you think space exploration is worth the investment?,0 days 00:00:25.716523,deepseek-r1
+127,analytical,opinion,"Which is more important, individual rights or national security?",0 days 00:00:30.340726,deepseek-r1
+128,opinion,opinion,What do you think is the most important quality in a leader?,0 days 00:00:17.641098,deepseek-r1
+129,opinion,opinion,What is your opinion on the role of artificial intelligence in society?,0 days 00:00:23.184309,deepseek-r1
+130,analytical,analytical,How does the portrayal of artificial intelligence in movies compare to its actual development in technology?,0 days 00:00:29.358317,deepseek-r1
+131,analytical,analytical,What are the main differences in leadership styles between Steve Jobs and Elon Musk?,0 days 00:00:40.388936,deepseek-r1
+132,analytical,analytical,How do the themes of love and sacrifice manifest differently in 'Romeo and Juliet' and 'The Great Gatsby'?,0 days 00:00:18.432232,deepseek-r1
+133,analytical,analytical,In what ways has the COVID-19 pandemic influenced global economic policies?,0 days 00:00:26.575327,deepseek-r1
+134,analytical,analytical,How does the structure of '1984' contribute to the novel's dystopian themes?,0 days 00:00:20.627646,deepseek-r1
+135,analytical,analytical,How does renewable energy impact global economies compared to fossil fuels?,0 days 00:00:41.482056,deepseek-r1
+136,analytical,analytical,What are the advantages and disadvantages of a globalized economy?,0 days 00:00:19.475644,deepseek-r1
+137,analytical,analytical,How do cultural differences shape international business practices?,0 days 00:00:46.779561,deepseek-r1
+138,analytical,analytical,What are the ethical considerations of gene editing technology?,0 days 00:00:26.788418,deepseek-r1
+139,analytical,analytical,How does the portrayal of women in media influence societal expectations?,0 days 00:00:28.900814,deepseek-r1
+140,factual,factual,What year did the Titanic sink?,0 days 00:00:12.359462,deepseek-r1
+141,factual,factual,Who is the current president of France?,0 days 00:00:17.372811,deepseek-r1
+142,factual,factual,How many planets are there in our solar system?,0 days 00:00:25.612815,deepseek-r1
+143,factual,factual,What is the capital city of Japan?,0 days 00:00:24.254255,deepseek-r1
+144,factual,factual,When was the Declaration of Independence signed?,0 days 00:00:21.455492,deepseek-r1
+145,factual,factual,Who invented the telephone?,0 days 00:00:20.258488,deepseek-r1
+146,factual,factual,What is the tallest mountain in the world?,0 days 00:00:23.128715,deepseek-r1
+147,factual,factual,What is the chemical formula for water?,0 days 00:00:18.412006,deepseek-r1
+148,factual,factual,Which country hosted the 2016 Summer Olympics?,0 days 00:00:21.354794,deepseek-r1
+149,factual,factual,What is the largest ocean on Earth?,0 days 00:00:30.267221,deepseek-r1
+150,opinion,opinion,What do you think is the most impactful technological innovation of the 21st century?,0 days 00:00:01.276521,llama3.1
+151,opinion,opinion,"In your opinion, which actor portrayed the best version of Sherlock Holmes?",0 days 00:00:01.197363,llama3.1
+152,opinion,opinion,Do you believe social media has a positive or negative impact on society?,0 days 00:00:01.225748,llama3.1
+153,opinion,opinion,"Which music genre do you prefer, and why?",0 days 00:00:01.167905,llama3.1
+154,opinion,opinion,What is the best way to improve the education system?,0 days 00:00:01.175236,llama3.1
+155,opinion,opinion,Why do people like artifical intelligence,0 days 00:00:01.054036,llama3.1
+156,opinion,opinion,Do you think space exploration is worth the investment?,0 days 00:00:01.124005,llama3.1
+157,opinion,opinion,"Which is more important, individual rights or national security?",0 days 00:00:01.155476,llama3.1
+158,opinion,opinion,What do you think is the most important quality in a leader?,0 days 00:00:01.182169,llama3.1
+159,opinion,opinion,What is your opinion on the role of artificial intelligence in society?,0 days 00:00:01.203107,llama3.1
+160,analytical,analytical,How does the portrayal of artificial intelligence in movies compare to its actual development in technology?,0 days 00:00:01.432626,llama3.1
+161,analytical,analytical,What are the main differences in leadership styles between Steve Jobs and Elon Musk?,0 days 00:00:01.355537,llama3.1
+162,analytical,analytical,How do the themes of love and sacrifice manifest differently in 'Romeo and Juliet' and 'The Great Gatsby'?,0 days 00:00:01.586556,llama3.1
+163,analytical,analytical,In what ways has the COVID-19 pandemic influenced global economic policies?,0 days 00:00:01.281125,llama3.1
+164,analytical,analytical,How does the structure of '1984' contribute to the novel's dystopian themes?,0 days 00:00:01.359670,llama3.1
+165,analytical,analytical,How does renewable energy impact global economies compared to fossil fuels?,0 days 00:00:01.127200,llama3.1
+166,analytical,analytical,What are the advantages and disadvantages of a globalized economy?,0 days 00:00:01.183816,llama3.1
+167,analytical,analytical,How do cultural differences shape international business practices?,0 days 00:00:01.087643,llama3.1
+168,analytical,analytical,What are the ethical considerations of gene editing technology?,0 days 00:00:01.157048,llama3.1
+169,analytical,analytical,How does the portrayal of women in media influence societal expectations?,0 days 00:00:01.228104,llama3.1
+170,factual,factual,What year did the Titanic sink?,0 days 00:00:01.079773,llama3.1
+171,factual,factual,Who is the current president of France?,0 days 00:00:01.149421,llama3.1
+172,factual,factual,How many planets are there in our solar system?,0 days 00:00:01.146863,llama3.1
+173,factual,factual,What is the capital city of Japan?,0 days 00:00:01.089553,llama3.1
+174,factual,factual,When was the Declaration of Independence signed?,0 days 00:00:01.131986,llama3.1
+175,factual,factual,Who invented the telephone?,0 days 00:00:00.982136,llama3.1
+176,factual,factual,What is the tallest mountain in the world?,0 days 00:00:01.111435,llama3.1
+177,factual,factual,What is the chemical formula for water?,0 days 00:00:00.988168,llama3.1
+178,factual,factual,Which country hosted the 2016 Summer Olympics?,0 days 00:00:01.149849,llama3.1
+179,factual,factual,What is the largest ocean on Earth?,0 days 00:00:01.162039,llama3.1

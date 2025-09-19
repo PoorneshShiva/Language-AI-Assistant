@@ -9,7 +9,7 @@ loguru_logger.remove()
 loguru_logger.add(sys.stderr, level="INFO")
 
 # You can add more handlers here, for example, to log to a file:
-loguru_logger.add("file_{time}.log", level="DEBUG", rotation="10 MB")
+loguru_logger.add("logs/file_{time}.log", level="DEBUG", rotation="10 MB")
 
 # Assign the configured logger to 'logging'
 logging = loguru_logger

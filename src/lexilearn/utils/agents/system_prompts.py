@@ -170,6 +170,7 @@ class SysPrompts:
             verb_conj_query_text += f"\nInstructions:\n{verb_query_format_instructions}" # Added newline
             
         verb_conj_system_message = SystemMessage(content=verb_conj_query_text)
+        print(verb_conj_system_message)
         return (verb_parser, verb_conj_system_message)
 
     def get_adjectives_query(self,
@@ -215,7 +216,7 @@ class SysPrompts:
         
         Output:
         {
-          "positive": "schön",
+          "adjective": "schön",
           "comparative": "schöner",
           "superlative": "am schönsten / der/die/das schönste",
           "english_translation": "beautiful",

@@ -130,3 +130,6 @@ class AgenticModels:
             self.logging.error(f"LLM instance could not be created for provider '{self.model_provider}' with model id '{self.model_id}'. self.llm will be None.")
             
         return llm_instance
+
+llm_tools_user = AgenticModels(model="ollama", model_name="llama3.1").llm
+llm_tools_user_sonnet = AgenticModels(model="ollama", model_name="llama3.1").llm

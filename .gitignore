@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-
+frontend/node_modules/
 __pycache__/
 *swo
 *swp

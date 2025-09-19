@@ -14,50 +14,33 @@ from lexilearn.graph_nodes.grammar_processing_nodes import Nodes # Node implemen
 
 
 def create_grammar_processing_graph():
-    """Creates and compiles the grammar processing LangGraph.
+    """Creates and compiles the grammar processing LangGraph."""
+    nodes_instance = Nodes()
 
-    The graph processes a user query to identify parts oasdff speech, then
-    dispatches tasks to specialized nodes for verbs, nouns, and adjectives
-    to gather detailed grammatical information.
-
-    Returns:
-        A compiled LangGraph application.
-    """
-    nodes_instance = Nodes() # Instantiate the class containing graph node logic
-
-    # Define the StateGraph. 
-    # GermanGrammarDetails will accumulate results from different nodes.
-    # UserQuery is the initial input type to the graph.
     builder = StateGraph(GermanGrammarDetails, input=UserQuery)
 
-    # Add nodes to the graph
-    # The first argument is a unique name for the node.
-    # The second argument is the function or method that implements the node's logic.
-    builder.add_node("Part of Speech", nodes_instance.identify_parts_of_speech)
-    builder.add_node("Verb Conjugation", nodes_instance.get_verb_details)
-    builder.add_node("Noun", nodes_instance.get_noun_details) # As per notebook: builder.add_node("Noun", nodes.noun)
-    builder.add_node("Adjective", nodes_instance.get_adjective_details) # As per notebook: builder.add_node("Adjective", nodes.adjective)
+    builder.add_node("part_of_speech", nodes_instance.part_of_speech)
+    builder.add_node("verb_conjugation", nodes_instance.verb_conjugation)
+    builder.add_node("noun", nodes_instance.noun)
+    builder.add_node("adjective", nodes_instance.adjective)
+    builder.add_node("adverbs", nodes_instance.adverbs)
+    builder.add_node("prepositions", nodes_instance.prepositions)
+    builder.add_node("conjunctions", nodes_instance.conjunctions)
 
-    # Define the entry point of the graph
-    builder.add_edge(START, "Part of Speech")
+    builder.add_edge(START, "part_of_speech")
 
-    # Conditional edges based on the output of the "Part of Speech" node.
-    # The `dispatch_grammar_tasks` method in Nodes class determines which downstream
-    # nodes should be called (e.g., "Verb Conjugation", "Adjective", "Noun").
     builder.add_conditional_edges(
-        "Part of Speech", 
-        nodes_instance.dispatch_grammar_tasks, 
-        ["Verb Conjugation", "Adjective", "Noun", END] # Added END as a possible route
+        "part_of_speech",
+        nodes_instance.send_queries,
     )
 
-    # Edges from specific grammar detail nodes to END, signifying they are terminal for their branch.
-    builder.add_edge("Verb Conjugation", END)
-    builder.add_edge("Adjective", END)
-    builder.add_edge("Noun", END)
+    builder.add_edge("verb_conjugation", END)
+    builder.add_edge("adjective", END)
+    builder.add_edge("noun", END)
+    builder.add_edge("adverbs", END)
+    builder.add_edge("prepositions", END)
+    builder.add_edge("conjunctions", END)
 
-    # Compile the graph. A checkpointer can be added for persistence.
-    # memory = MemorySaver()
-    # app = builder.compile(checkpointer=memory)
     app = builder.compile()
 
     return app
